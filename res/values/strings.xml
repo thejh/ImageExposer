@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, ImageExposerActivity!</string>
+    <string name="app_name">ImageExposer</string>
+    <string name="currently_exposed_file">currently exposed file:</string>
+    <string name="refresh">refresh</string>
+    <string name="select_new_image">select new image file</string>
+    <string name="unbind_image">de-expose the currently exposed image</string>
+    <string name="notes">Notes:\n
+If it doesn\'t work, you might want to try:\n
+ - unplugging the device and plugging it in again\n
+ - checking you didn\'t deny root access\n
+ - adding an entry to the bug tracker at https://github.com/thejh/ImageExposer\n
+ - sending me an e-mail at jannhorn@googlemail.com\n
+\n
+source code is at https://github.com/thejh/ImageExposer\n</string>
+
+</resources>
