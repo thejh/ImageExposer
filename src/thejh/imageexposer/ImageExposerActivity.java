@@ -1,18 +1,61 @@
 package thejh.imageexposer;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 public class ImageExposerActivity extends Activity {
-	public static final String CONTROL_FILE = "/sys/devices/platform/usb_mass_storage/lun0/file";
+//	private static String CONTROL_FILE = "/sys/devices/platform/usb_mass_storage/lun0/file";
+	private static String CONTROL_FILE;
 	public static final int ACTIVITY_CHOOSE_FILE = 1;
+	
+	private static void findLun0(File dir, LinkedList<File> results) {
+//		Log.d("imageexposer", "traversing "+dir.getAbsolutePath());
+		File[] files = dir.listFiles();
+		for (File f: files) {
+			if (f.getName().equals("lun0")) {
+				Log.i("imageexposer", "found a lun0 dir");
+				File[] lun0_subfiles = f.listFiles(new FilenameFilter() {
+					@Override
+					public boolean accept(File dir, String filename) {
+						return filename.equals("file");
+					}
+				});
+				if (lun0_subfiles.length == 1) {
+					results.add(lun0_subfiles[0]);
+				}
+			} else
+				try {
+					if (f.isDirectory() && f.getAbsolutePath().equals(f.getCanonicalPath())) {
+						findLun0(f, results);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+		}
+	}
+	
+	static {
+		// figure out where the control file is
+		File sysfs = new File("/sys/devices");
+		LinkedList<File> results = new LinkedList<File>();
+		findLun0(sysfs, results);
+		if (results.size() == 0) {
+			throw new RuntimeException("no control file found");
+		}
+		CONTROL_FILE = results.getFirst().getAbsolutePath();
+	}
 	
     /** Called when the activity is first created. */
     @Override
